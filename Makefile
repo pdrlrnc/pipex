@@ -10,9 +10,9 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME        = pipex
+NAME        = pipex 
 
-SRC_FILES   = main
+SRC_FILES   = pipex factories parser cleaner
 SRC_DIR     = src
 OBJ_DIR     = obj
 INC_DIR     = include
@@ -21,15 +21,24 @@ LIBFT_URL   = https://github.com/pdrlrnc/libft.git
 CLONE_DIR   = libft
 LIBFT_LIB   = $(CLONE_DIR)/libft.a
 
-CC          = cc
+CC          = cc -g
 CFLAGS      = -Wall -Wextra -Werror -I$(INC_DIR) -I$(CLONE_DIR)
 RM          = rm -rf
+
+DEF_COLOUR = \033[0;39m
+TURQUOISE = \033[38;2;64;224;208m
 
 SRC         = $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(SRC_FILES)))
 OBJ         = $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
 
 all: $(CLONE_DIR) $(LIBFT_LIB) $(NAME)
-	@echo "Pipex ready! Pipe those Xs!"
+	@echo "$(TURQUOISE)__________.____________________________  ___$(DEF_COLOUR)"
+	@echo "$(TURQUOISE)\______   \   \______   \_   _____/\   \/  /$(DEF_COLOUR)"
+	@echo "$(TURQUOISE) |     ___/   ||     ___/|    __)_  \     / $(DEF_COLOUR)"
+	@echo "$(TURQUOISE) |    |   |   ||    |    |        \ /     \ $(DEF_COLOUR)"
+	@echo "$(TURQUOISE) |____|   |___||____|   /_______  //___/\  \ $(DEF_COLOUR)"
+	@echo "$(TURQUOISE)                                \/       \_/$(DEF_COLOUR)"
+
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -44,11 +53,13 @@ $(CLONE_DIR):
 	@git clone --depth 1 $(LIBFT_URL) $(CLONE_DIR)
 
 $(LIBFT_LIB): | $(CLONE_DIR)
-	@make -C $(CLONE_DIR)
+	@make --no-print-directory -C $(CLONE_DIR)
+	@mv $(CLONE_DIR)/libft.h $(INC_DIR)
 
 clean:
 	@$(RM) $(OBJ_DIR)
-	@if [ -d $(CLONE_DIR) ]; then make clean -C $(CLONE_DIR); fi
+	@if [ -d $(CLONE_DIR) ]; then make clean --no-print-directory -C $(CLONE_DIR); fi
+	@$(RM) $(INC_DIR)/libft.h
 
 fclean: clean
 	@$(RM) $(NAME)

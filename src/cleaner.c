@@ -1,36 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   cleaner.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedde-so <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/18 09:46:22 by pedde-so          #+#    #+#             */
-/*   Updated: 2025/07/18 09:46:23 by pedde-so         ###   ########.fr       */
+/*   Created: 2025/07/18 14:51:23 by pedde-so          #+#    #+#             */
+/*   Updated: 2025/07/18 14:51:36 by pedde-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "../include/pipex.h"
 
-# include "libft.h"
-# include <unistd.h>
-# include <errno.h>
-
-typedef struct s_params
+void	clean(void)
 {
-	char	*infile;
-	char	**cmds;
-	char	*outfile;
-}	t_params;
+	int	i;
 
-void	parse_args(int argc, char **argv);
-t_params	**param_factory(void);
-void	clean(void);
-void	clean_on_failure(int i);
-
-
-//functions used only for debug, they CAN'T be delivered
-void	print_for_debug(void);
-
-#endif
+	i = 0;
+	free((*param_factory())->infile);
+	free((*param_factory())->outfile);
+	while ((*param_factory())->cmds[i])
+		free((*param_factory())->cmds[i++]);
+	free((*param_factory())->cmds);
+	free((*param_factory()));
+}

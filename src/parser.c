@@ -1,0 +1,67 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pedde-so <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/18 10:51:44 by pedde-so          #+#    #+#             */
+/*   Updated: 2025/07/18 10:51:45 by pedde-so         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/pipex.h"
+#include <stdio.h>
+
+
+void	parse_args(int argc, char **argv)
+{
+	int	i;
+
+	(*param_factory())->infile = malloc((ft_strlen(argv[1]) + 1) * sizeof(char));
+	if (!(*param_factory())->infile)
+	{
+		free((*param_factory()));
+		exit(EXIT_FAILURE);
+	}
+	ft_strlcpy((*param_factory())->infile, argv[1], ft_strlen(argv[1]) + 1);
+	(*param_factory())->cmds = malloc((argc - 1) * sizeof(char *));
+	i = 0;
+	while ((i + 1) < (argc - 2))
+	{
+		(*param_factory())->cmds[i] = malloc((ft_strlen(argv[i + 2]) + 1) * sizeof(char));
+		if (!(*param_factory())->cmds[i])
+			return (clean_on_failure(i));
+		ft_strlcpy((*param_factory())->cmds[i], argv[i + 2], ft_strlen(argv[i + 2]) + 1);
+		i++;
+	}
+	(*param_factory())->cmds[i] = NULL;
+	(*param_factory())->outfile = malloc((ft_strlen(argv[argc - 1]) + 1) * sizeof(char));
+	if (!(*param_factory())->outfile)
+		return (clean_on_failure(argc - 3));
+	ft_strlcpy((*param_factory())->outfile, argv[argc - 1], ft_strlen(argv[argc - 1]) + 1);
+	print_for_debug();
+	clean();
+}
+
+void	clean_on_failure(int i)
+{
+	while (--i > -1)
+		free((*param_factory())->cmds[i]);
+	free((*param_factory())->infile);
+	free((*param_factory()));
+}
+
+void	print_for_debug(void)
+{
+	int	i;
+
+	i = 0;
+	printf("infile: %s\n", (*param_factory())->infile);
+	while ((*param_factory())->cmds[i])
+	{
+		printf("param %d: %s\n", i, (*param_factory())->cmds[i]);
+		i++;
+	}
+	printf("outfile: %s\n", (*param_factory())->outfile);
+}
