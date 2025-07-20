@@ -15,7 +15,9 @@
 void	parse_args(int argc, char **argv)
 {
 	int	i;
-
+	
+	if (argc < 5)
+		exit(EXIT_FAILURE);
 	(*param_factory())->infile = malloc((ft_strlen(argv[1]) + 1) * sizeof(char));
 	if (!(*param_factory())->infile)
 	{
@@ -65,9 +67,33 @@ void	validate_params(void)
 		path = ft_strjoin("/usr/bin/", split_res[0]);
 		check_for_malloc_failure(path);
 		access_res = (access(path , F_OK | X_OK));
+		if (access_res == -1)
+			perror(split_res[0]);
 		free(path);
 		clean_split(split_res);
 	}
 	if (access_res == -1)
-		perror("fuck me");
+		exit(EXIT_FAILURE);
+	validate_file_params();
+
+
+}
+
+void	validate_file_params(void)
+{
+	(*param_factory())->fd_infile = open((*param_factory())->infile, O_RDONLY);
+	if ((*param_factory())->fd_infile == -1)
+	{
+		perror((*param_factory())->infile);
+		clean();
+		exit(EXIT_FAILURE);
+	}
+	(*param_factory())->fd_outfile = open((*param_factory())->outfile, O_CREAT, 0644); 
+	if ((*param_factory())->fd_infile == -1)
+	{
+		perror((*param_factory())->infile);
+		clean();
+		exit(EXIT_FAILURE);
+	}
+	print_for_debug();
 }

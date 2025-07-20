@@ -12,7 +12,7 @@
 
 NAME        = pipex 
 
-SRC_FILES   = pipex factories parser cleaner debug
+SRC_FILES   = pipex factories parser cleaner execution debug
 SRC_DIR     = src
 OBJ_DIR     = obj
 INC_DIR     = include

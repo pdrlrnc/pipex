@@ -15,6 +15,19 @@
 
 int	main(int argc, char **argv)
 {
+	int 	pipe_fd[2];
+	int	old_pipe_fd[2];
+	int	pid;
+	
 	parse_args(argc, argv);
-	clean();
+	while ((*param_factory())->cmd_n)
+	{
+		pipe(pipe_fd);
+		pid = fork();
+		if (pid == 0)
+			child(pipe_fd, old_pipe_fd, argc - 3);
+		else
+			parent(pipe_fd, old_pipe_fd);
+		(*param_factory())->cmd_n--;
+	}
 }

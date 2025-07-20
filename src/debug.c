@@ -18,11 +18,11 @@ void	print_for_debug(void)
 	int	i;
 
 	i = 0;
-	printf("infile: %s\n", (*param_factory())->infile);
+	printf("infile (fd=%d): %s\n", (*param_factory())->fd_infile, (*param_factory())->infile);
 	while ((*param_factory())->cmds[i])
 	{
 		printf("param %d: %s\n", i, (*param_factory())->cmds[i]);
 		i++;
 	}
-	printf("outfile: %s\n", (*param_factory())->outfile);
+	printf("outfile (fd=%d): %s\n", (*param_factory())->fd_outfile ,(*param_factory())->outfile);
 }

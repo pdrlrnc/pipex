@@ -22,6 +22,10 @@ void	clean(void)
 	while ((*param_factory())->cmds[i])
 		free((*param_factory())->cmds[i++]);
 	free((*param_factory())->cmds);
+	if ((*param_factory())->fd_infile > 0)
+		close((*param_factory())->fd_infile);
+	if ((*param_factory())->fd_outfile > 0)
+		close((*param_factory())->fd_outfile);
 	free((*param_factory()));
 }
 
