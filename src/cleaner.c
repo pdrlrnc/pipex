@@ -24,3 +24,22 @@ void	clean(void)
 	free((*param_factory())->cmds);
 	free((*param_factory()));
 }
+
+void	check_for_malloc_failure(void *ptr)
+{
+	if (!ptr)
+	{
+		clean();
+		exit(EXIT_FAILURE);
+	}
+}
+
+void	clean_split(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[i])
+		free(split[i++]);
+	free(split);
+}

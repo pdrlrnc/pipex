@@ -12,7 +12,7 @@
 
 NAME        = pipex 
 
-SRC_FILES   = pipex factories parser cleaner
+SRC_FILES   = pipex factories parser cleaner debug
 SRC_DIR     = src
 OBJ_DIR     = obj
 INC_DIR     = include
@@ -21,7 +21,7 @@ LIBFT_URL   = https://github.com/pdrlrnc/libft.git
 CLONE_DIR   = libft
 LIBFT_LIB   = $(CLONE_DIR)/libft.a
 
-CC          = cc -g
+CC          = cc -g -O0
 CFLAGS      = -Wall -Wextra -Werror -I$(INC_DIR) -I$(CLONE_DIR)
 RM          = rm -rf
 
@@ -53,7 +53,7 @@ $(CLONE_DIR):
 	@git clone --depth 1 $(LIBFT_URL) $(CLONE_DIR)
 
 $(LIBFT_LIB): | $(CLONE_DIR)
-	@make --no-print-directory -C $(CLONE_DIR)
+	@make debug --no-print-directory -C $(CLONE_DIR)
 	@mv $(CLONE_DIR)/libft.h $(INC_DIR)
 
 clean:

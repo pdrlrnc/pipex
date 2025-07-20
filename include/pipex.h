@@ -16,6 +16,7 @@
 # include "libft.h"
 # include <unistd.h>
 # include <errno.h>
+# include <stdio.h>
 
 typedef struct s_params
 {
@@ -28,6 +29,9 @@ void	parse_args(int argc, char **argv);
 t_params	**param_factory(void);
 void	clean(void);
 void	clean_on_failure(int i);
+void	validate_params(void);
+void	check_for_malloc_failure(void *ptr);
+void	clean_split(char **split);
 
 
 //functions used only for debug, they CAN'T be delivered

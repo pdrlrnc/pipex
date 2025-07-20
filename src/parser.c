@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
-#include <stdio.h>
-
 
 void	parse_args(int argc, char **argv)
 {
@@ -40,8 +38,7 @@ void	parse_args(int argc, char **argv)
 	if (!(*param_factory())->outfile)
 		return (clean_on_failure(argc - 3));
 	ft_strlcpy((*param_factory())->outfile, argv[argc - 1], ft_strlen(argv[argc - 1]) + 1);
-	print_for_debug();
-	clean();
+	validate_params();
 }
 
 void	clean_on_failure(int i)
@@ -52,16 +49,25 @@ void	clean_on_failure(int i)
 	free((*param_factory()));
 }
 
-void	print_for_debug(void)
+void	validate_params(void)
 {
+	int	access_res;
+	char	*path;
+	char	**split_res;
 	int	i;
-
+	
+	access_res = 0;
 	i = 0;
-	printf("infile: %s\n", (*param_factory())->infile);
-	while ((*param_factory())->cmds[i])
+	while (access_res == 0 && (*param_factory())->cmds[i] != NULL)
 	{
-		printf("param %d: %s\n", i, (*param_factory())->cmds[i]);
-		i++;
+		split_res = ft_split((*param_factory())->cmds[i++], ' ');
+		check_for_malloc_failure(split_res);
+		path = ft_strjoin("/usr/bin/", split_res[0]);
+		check_for_malloc_failure(path);
+		access_res = (access(path , F_OK | X_OK));
+		free(path);
+		clean_split(split_res);
 	}
-	printf("outfile: %s\n", (*param_factory())->outfile);
+	if (access_res == -1)
+		perror("fuck me");
 }

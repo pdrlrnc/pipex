@@ -1,20 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pedde-so <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/18 10:59:55 by pedde-so          #+#    #+#             */
-/*   Updated: 2025/07/18 10:59:58 by pedde-so         ###   ########.fr       */
+/*   Created: 2025/07/20 11:59:27 by pedde-so          #+#    #+#             */
+/*   Updated: 2025/07/20 11:59:43 by pedde-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 #include <stdio.h>
 
-int	main(int argc, char **argv)
+void	print_for_debug(void)
 {
-	parse_args(argc, argv);
-	clean();
+	int	i;
+
+	i = 0;
+	printf("infile: %s\n", (*param_factory())->infile);
+	while ((*param_factory())->cmds[i])
+	{
+		printf("param %d: %s\n", i, (*param_factory())->cmds[i]);
+		i++;
+	}
+	printf("outfile: %s\n", (*param_factory())->outfile);
 }
