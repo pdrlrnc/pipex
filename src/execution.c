@@ -16,14 +16,19 @@ void	child(int *pipe)
 {
 	char	**cmd;
 	int	exec_res;
+	int	dup_res;
 
 	if (!(*param_factory())->iteration)
 	{
 		close(pipe[0]);
 		cmd = ft_split(((*param_factory())->cmds)[0], ' ');
 		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
-		dup2((*param_factory())->fd_infile, STDIN_FILENO);
-		dup2(pipe[1], STDOUT_FILENO);
+		dup_res = dup2((*param_factory())->fd_infile, STDIN_FILENO);
+		if (dup_res == -1)
+			perror("dup2");
+		dup_res = dup2(pipe[1], STDOUT_FILENO);
+		if (dup_res == -1)
+			perror("dup2");
 		exec_res = execve(cmd[0], cmd, NULL);
 		if (exec_res == -1)
 		{
@@ -36,8 +41,12 @@ void	child(int *pipe)
 	{
 		cmd = ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' ');
 		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
-		dup2((*param_factory())->old_pipe_fd, STDIN_FILENO);
-		dup2((*param_factory())->fd_outfile, STDOUT_FILENO);
+		dup_res = dup2((*param_factory())->old_pipe_fd, STDIN_FILENO);
+		if (dup_res == -1)
+			perror("dup2");
+		dup_res = dup2((*param_factory())->fd_outfile, STDOUT_FILENO);
+		if (dup_res == -1)
+			perror("dup2");
 		execve(cmd[0], cmd, NULL);
 		clean_split(cmd);
 	}
@@ -45,9 +54,13 @@ void	child(int *pipe)
 	{	
 		cmd = ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' ');
 		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
-		dup2((*param_factory())->old_pipe_fd, STDIN_FILENO);
+		dup_res = dup2((*param_factory())->old_pipe_fd, STDIN_FILENO);
+		if (dup_res == -1)
+			perror("dup2");
 		dup2(pipe[1], STDOUT_FILENO);
-		execve(cmd[0], cmd, NULL);
+		exec_res = execve(cmd[0], cmd, NULL);
+		if (exec_res == -1)
+			perror("execve");
 		clean_split(cmd);
 	}
 }

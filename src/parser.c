@@ -88,7 +88,7 @@ void	validate_file_params(void)
 		clean();
 		exit(EXIT_FAILURE);
 	}
-	(*param_factory())->fd_outfile = open((*param_factory())->outfile, O_CREAT, 0644); 
+	(*param_factory())->fd_outfile = open((*param_factory())->outfile, O_WRONLY | O_CREAT, 0644); 
 	if ((*param_factory())->fd_infile == -1)
 	{
 		perror((*param_factory())->infile);
