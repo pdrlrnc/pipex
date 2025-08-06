@@ -72,11 +72,11 @@ void	validate_params(void)
 		free(path);
 		clean_split(split_res);
 	}
+	(*param_factory())->cmd_n = i;
+	(*param_factory())->iteration = 0;
 	if (access_res == -1)
 		exit(EXIT_FAILURE);
 	validate_file_params();
-
-
 }
 
 void	validate_file_params(void)

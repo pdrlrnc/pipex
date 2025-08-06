@@ -25,4 +25,6 @@ void	print_for_debug(void)
 		i++;
 	}
 	printf("outfile (fd=%d): %s\n", (*param_factory())->fd_outfile ,(*param_factory())->outfile);
+
+	printf("cmds_n = %d\n", (*param_factory())->cmd_n);
 }

@@ -18,6 +18,7 @@
 # include <errno.h>
 # include <stdio.h>
 # include <fcntl.h>
+# include <sys/wait.h>
 
 typedef struct s_params
 {
@@ -25,8 +26,10 @@ typedef struct s_params
 	char	*infile;
 	char	**cmds;
 	int	cmd_n;
+	int	iteration;
 	char	*outfile;
 	int		fd_outfile;
+	int		old_pipe_fd;
 }	t_params;
 
 void	parse_args(int argc, char **argv);
@@ -37,8 +40,8 @@ void	validate_params(void);
 void	check_for_malloc_failure(void *ptr);
 void	clean_split(char **split);
 void	validate_file_params(void);
-void	child(int *fd, int *old_fd, int cmds);
-void	parent(int *fd, int *old_fd);
+void	child(int *pipe);
+void	parent(int *pipe);
 
 
 //functions used only for debug, they CAN'T be delivered

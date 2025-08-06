@@ -11,23 +11,21 @@
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
-#include <stdio.h>
 
 int	main(int argc, char **argv)
 {
-	int 	pipe_fd[2];
-	int	old_pipe_fd[2];
+	int 	pipefd[2];
 	int	pid;
 	
 	parse_args(argc, argv);
-	while ((*param_factory())->cmd_n)
+	while ((*param_factory())->iteration < (*param_factory())->cmd_n)
 	{
-		pipe(pipe_fd);
+		pipe(pipefd);
 		pid = fork();
 		if (pid == 0)
-			child(pipe_fd, old_pipe_fd, argc - 3);
+			child(pipefd);
 		else
-			parent(pipe_fd, old_pipe_fd);
-		(*param_factory())->cmd_n--;
+			parent(pipefd);
+		(*param_factory())->iteration++;
 	}
 }
