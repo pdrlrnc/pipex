@@ -20,12 +20,14 @@ int	main(int argc, char **argv)
 	parse_args(argc, argv);
 	while ((*param_factory())->iteration < (*param_factory())->cmd_n)
 	{
-		pipe(pipefd);
+		check_for_errors(pipe(pipefd), NULL, "pipe");
 		pid = fork();
 		if (pid == 0)
 			child(pipefd);
-		else
+		else if (pid != -1)
 			parent(pipefd);
+		if (pid == -1)
+			check_for_errors(-1, NULL, "fork");
 		(*param_factory())->iteration++;
 	}
 }

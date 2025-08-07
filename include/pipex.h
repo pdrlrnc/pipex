@@ -42,6 +42,7 @@ void	clean_split(char **split);
 void	validate_file_params(void);
 void	child(int *pipe);
 void	parent(int *pipe);
+void	check_for_errors(int res, char **cmd, char *command_name);
 
 
 //functions used only for debug, they CAN'T be delivered
