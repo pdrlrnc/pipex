@@ -45,6 +45,7 @@ void	validate_file_params(void);
 void	child(int *pipe);
 void	parent(int *pipe);
 void	check_for_errors(int res, char **cmd, char *command_name);
+void	close_fds(int fd1, int fd2);
 
 
 //functions used only for debug, they CAN'T be delivered

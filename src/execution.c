@@ -19,11 +19,11 @@ void	child(int *pipe)
 	cmd = NULL;
 	if (!(*param_factory())->iteration)
 	{
-		check_for_errors(close(pipe[0]), cmd, "close");
 		cmd = ft_split(((*param_factory())->cmds)[0], ' ');
 		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
 		check_for_errors(dup2((*param_factory())->fd_infile, STDIN_FILENO), cmd, "dup2");
 		check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
+		close_fds(*pipe, *(pipe + 1));
 		check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
 	}
 	else if (((*param_factory())->iteration + 1) == (*param_factory())->cmd_n)
@@ -32,6 +32,7 @@ void	child(int *pipe)
 		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
 		check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
 		check_for_errors(dup2((*param_factory())->fd_outfile, STDOUT_FILENO), cmd, "dup2");
+		close_fds(*pipe, *(pipe + 1));
 		check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
 	}
 	else 
@@ -40,6 +41,7 @@ void	child(int *pipe)
 		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
 		check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
 		check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
+		close_fds(*pipe, *(pipe + 1));
 		check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
 	}
 }
@@ -66,9 +68,14 @@ void	parent(int *pipe)
 		check_for_errors(close(pipe[0]), NULL, "close");
 		check_for_errors(close(pipe[1]), NULL, "close");
 		while (i--)
+		{
+			close(0);
 			check_for_errors(wait(&status), NULL, "wait");
+		}
 	}
 }
+
+//NEED to check access with all the paths on environment variable
 
 void	check_for_errors(int res, char **cmd, char *command_name)
 {

@@ -30,4 +30,5 @@ int	main(int argc, char **argv, char **environment)
 			check_for_errors(-1, NULL, "fork");
 		(*param_factory())->iteration++;
 	}
+	clean();
 }
