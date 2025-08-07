@@ -30,9 +30,11 @@ typedef struct s_params
 	char	*outfile;
 	int		fd_outfile;
 	int		old_pipe_fd;
+	char	**paths;
 }	t_params;
 
-void	parse_args(int argc, char **argv);
+void	parse_args(int argc, char **argv, char **environment);
+void	parse_environment(char **environment);
 t_params	**param_factory(void);
 void	clean(void);
 void	clean_on_failure(int i);

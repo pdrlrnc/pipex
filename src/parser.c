@@ -12,12 +12,13 @@
 
 #include "../include/pipex.h"
 
-void	parse_args(int argc, char **argv)
+void	parse_args(int argc, char **argv, char **environment)
 {
 	int	i;
 	
 	if (argc < 5)
 		exit(EXIT_FAILURE);
+	parse_environment(environment);
 	(*param_factory())->infile = malloc((ft_strlen(argv[1]) + 1) * sizeof(char));
 	if (!(*param_factory())->infile)
 	{
@@ -41,6 +42,21 @@ void	parse_args(int argc, char **argv)
 		return (clean_on_failure(argc - 3));
 	ft_strlcpy((*param_factory())->outfile, argv[argc - 1], ft_strlen(argv[argc - 1]) + 1);
 	validate_params();
+}
+
+void	parse_environment(char **environment)
+{
+	int	i;
+
+	i = 0;
+	while (environment[i])
+	{
+		if (!ft_strncmp(environment[i], "PATH=", 5))
+			break;
+		i++;
+	}
+	environment[i] += 5;
+	(*param_factory())->paths = ft_split(environment[i], ':');
 }
 
 void	clean_on_failure(int i)

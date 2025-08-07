@@ -27,4 +27,9 @@ void	print_for_debug(void)
 	printf("outfile (fd=%d): %s\n", (*param_factory())->fd_outfile ,(*param_factory())->outfile);
 
 	printf("cmds_n = %d\n", (*param_factory())->cmd_n);
+
+	printf("paths = \n");
+	i = 0;
+	while ((*param_factory())->paths[i])
+		printf("%s\n", (*param_factory())->paths[i++]);
 }

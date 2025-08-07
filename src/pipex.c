@@ -12,12 +12,12 @@
 
 #include "../include/pipex.h"
 
-int	main(int argc, char **argv)
+int	main(int argc, char **argv, char **environment)
 {
 	int 	pipefd[2];
 	int	pid;
 	
-	parse_args(argc, argv);
+	parse_args(argc, argv, environment);
 	while ((*param_factory())->iteration < (*param_factory())->cmd_n)
 	{
 		check_for_errors(pipe(pipefd), NULL, "pipe");
