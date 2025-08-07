@@ -47,8 +47,9 @@ void	child(int *pipe)
 void	parent(int *pipe)
 {
 	int	status;
+	static int	i;
 
-	wait(&status);
+	i++;
 	if (!(*param_factory())->iteration)
 	{
 		check_for_errors(close(pipe[1]), NULL, "close");
@@ -64,6 +65,8 @@ void	parent(int *pipe)
 	{
 		check_for_errors(close(pipe[0]), NULL, "close");
 		check_for_errors(close(pipe[1]), NULL, "close");
+		while (i--)
+			check_for_errors(wait(&status), NULL, "wait");
 	}
 }
 
