@@ -93,3 +93,57 @@ void	validate_file_params(void)
 	}
 	print_for_debug();
 }
+
+char	**clean_commands(char **split)
+{
+	int	i;
+	int	first;
+	int	last;
+
+	i = 0;
+	while (split[i])
+	{
+		if (*(split[i]) == '\'' && *(split[i] + ft_strlen(split[i]) - 1) != '\'')
+		{
+			first = i;
+			split[i] = ft_strdup_append(NULL, split[i], " ");
+			while (split[i])
+			{
+				if (*(split[i] + ft_strlen(split[i]) - 1) == '\'')
+				{
+					last = i;
+					break;
+				}
+				i++;
+			}
+			if (split[i] && last > first)
+			{
+				split = ft_shrink_split(split, first, last);
+				if (!split)
+					return (NULL);
+				i = -1;
+				split[first] = clean_quotes(split[first]);
+			}
+		}
+		i++;
+	}
+	return (split);
+}
+
+char	*clean_quotes(char *quoted_cmd)
+{
+	char	*result;
+	unsigned int	i;
+	unsigned int	j;
+
+	result = malloc(ft_strlen(quoted_cmd) - 1);
+	if (!result)
+		return (NULL);
+	i = 0;
+	j = 1;
+	while (i < (ft_strlen(quoted_cmd) - 2))
+		*(result + i++) = *(quoted_cmd + j++);
+	*(result + i) = '\0';
+	free(quoted_cmd);
+	return (result);
+}

@@ -23,7 +23,7 @@ int	main(int argc, char **argv, char **environment)
 		check_for_errors(pipe(pipefd), NULL, "pipe");
 		pid = fork();
 		if (pid == 0)
-			child(pipefd);
+			child(pipefd, environment);
 		else if (pid != -1)
 			parent(pipefd);
 		if (pid == -1)

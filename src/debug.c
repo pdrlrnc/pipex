@@ -33,3 +33,16 @@ void	print_for_debug(void)
 	while ((*param_factory())->paths[i])
 		printf("%s\n", (*param_factory())->paths[i++]);
 }
+
+void	print_cmds(char **cmd)
+{
+	int	i;
+
+	printf("Printing commands:\n");
+	i = 0;
+	while (cmd[i])
+	{
+		printf("cmd[%d]: %s\n", i, cmd[i]);
+		i++;
+	}
+}

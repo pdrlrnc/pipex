@@ -12,45 +12,46 @@
 
 #include "../include/pipex.h"
 
-void	child(int *pipe)
+void	child(int *pipe, char **environment)
 {
 	char	**cmd;
 
 	cmd = NULL;
 	if (!(*param_factory())->iteration)
 	{
-		cmd = ft_split(((*param_factory())->cmds)[0], ' ');
+		cmd = clean_commands(ft_split(((*param_factory())->cmds)[0], ' '));
+		print_cmds(cmd);
 		cmd[0] = correct_path(cmd[0]);
 		if (cmd[0])
 		{
 			check_for_errors(dup2((*param_factory())->fd_infile, STDIN_FILENO), cmd, "dup2");
 			check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
 			close_fds(*pipe, *(pipe + 1));
-			check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+			check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
 		}
 	}
 	else if (((*param_factory())->iteration + 1) == (*param_factory())->cmd_n)
 	{
-		cmd = ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' ');
+		cmd = clean_commands(ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' '));
 		cmd[0] = correct_path(cmd[0]);
 		if (cmd[0])
 		{
 			check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
 			check_for_errors(dup2((*param_factory())->fd_outfile, STDOUT_FILENO), cmd, "dup2");
 			close_fds(*pipe, *(pipe + 1));
-			check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+			check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
 		}
 	}
 	else 
 	{	
-		cmd = ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' ');
+		cmd = clean_commands(ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' '));
 		cmd[0] = correct_path(cmd[0]);
 		if (cmd[0])
 		{
 			check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
 			check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
 			close_fds(*pipe, *(pipe + 1));
-			check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+			check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
 		}
 	}
 }

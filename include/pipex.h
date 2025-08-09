@@ -42,14 +42,17 @@ void	validate_params(void);
 void	check_for_malloc_failure(void *ptr);
 void	clean_split(char **split);
 void	validate_file_params(void);
-void	child(int *pipe);
+void	child(int *pipe, char **environment);
 void	parent(int *pipe);
 void	check_for_errors(int res, char **cmd, char *command_name);
 void	close_fds(int fd1, int fd2);
 char	*correct_path(char *cmd);
+char	**clean_commands(char **split);
+char	*clean_quotes(char *quoted_cmd);
 
 
 //functions used only for debug, they CAN'T be delivered
 void	print_for_debug(void);
+void	print_cmds(char **cmd);
 
 #endif
