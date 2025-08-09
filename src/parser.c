@@ -48,7 +48,7 @@ void	parse_args(int argc, char **argv, char **environment)
 
 void	parse_environment(char **environment)
 {
-	int	i;
+	int		i;
 
 	i = 0;
 	while (environment[i])
@@ -59,6 +59,12 @@ void	parse_environment(char **environment)
 	}
 	environment[i] += 5;
 	(*param_factory())->paths = ft_split(environment[i], ':');
+	i = 0;
+	while ((*param_factory())->paths[i])
+	{
+		(*param_factory())->paths[i] = ft_strdup_append(NULL, (*param_factory())->paths[i], "/");
+		i++;
+	}
 }
 
 void	clean_on_failure(int i)

@@ -20,29 +20,38 @@ void	child(int *pipe)
 	if (!(*param_factory())->iteration)
 	{
 		cmd = ft_split(((*param_factory())->cmds)[0], ' ');
-		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
-		check_for_errors(dup2((*param_factory())->fd_infile, STDIN_FILENO), cmd, "dup2");
-		check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
-		close_fds(*pipe, *(pipe + 1));
-		check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+		cmd[0] = correct_path(cmd[0]);
+		if (cmd[0])
+		{
+			check_for_errors(dup2((*param_factory())->fd_infile, STDIN_FILENO), cmd, "dup2");
+			check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
+			close_fds(*pipe, *(pipe + 1));
+			check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+		}
 	}
 	else if (((*param_factory())->iteration + 1) == (*param_factory())->cmd_n)
 	{
 		cmd = ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' ');
-		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
-		check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
-		check_for_errors(dup2((*param_factory())->fd_outfile, STDOUT_FILENO), cmd, "dup2");
-		close_fds(*pipe, *(pipe + 1));
-		check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+		cmd[0] = correct_path(cmd[0]);
+		if (cmd[0])
+		{
+			check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
+			check_for_errors(dup2((*param_factory())->fd_outfile, STDOUT_FILENO), cmd, "dup2");
+			close_fds(*pipe, *(pipe + 1));
+			check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+		}
 	}
 	else 
 	{	
 		cmd = ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' ');
-		cmd[0] = ft_strdup_append("/bin/", cmd[0], NULL);
-		check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
-		check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
-		close_fds(*pipe, *(pipe + 1));
-		check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+		cmd[0] = correct_path(cmd[0]);
+		if (cmd[0])
+		{
+			check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
+			check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
+			close_fds(*pipe, *(pipe + 1));
+			check_for_errors(execve(cmd[0], cmd, NULL), cmd, "execve");
+		}
 	}
 }
 
@@ -75,7 +84,28 @@ void	parent(int *pipe)
 	}
 }
 
-//NEED to check access with all the paths on environment variable
+char	*correct_path(char *cmd)
+{
+	char	*full_path;
+	int		i;
+	int		access_res;
+
+	i = 0;
+	while ((*param_factory())->paths[i])
+	{
+		full_path = ft_strjoin((*param_factory())->paths[i++], cmd);
+		if (full_path)
+		{
+			access_res = access(full_path, F_OK | X_OK);
+			if (!access_res)
+				return (full_path);
+			else
+				free(full_path);
+		}
+	}
+	free(cmd);
+	return (NULL);
+}
 
 void	check_for_errors(int res, char **cmd, char *command_name)
 {
