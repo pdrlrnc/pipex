@@ -79,7 +79,8 @@ void	validate_file_params(void)
 {
 	(*param_factory())->fd_infile = open((*param_factory())->infile, O_RDONLY);
 	if ((*param_factory())->fd_infile == -1)
-	{
+	{	
+		(*param_factory())->fd_outfile = open((*param_factory())->outfile, O_WRONLY | O_CREAT, 0644); 
 		perror((*param_factory())->infile);
 		clean();
 		exit(EXIT_FAILURE);
@@ -91,7 +92,6 @@ void	validate_file_params(void)
 		clean();
 		exit(EXIT_FAILURE);
 	}
-	print_for_debug();
 }
 
 int	has_quotes(char *cmd)
@@ -203,7 +203,7 @@ char	**clean_quotes(char **quoted_cmd)
 	unsigned int	j;
 	unsigned int	k;
 	
-	result = malloc((ft_splitlen(quoted_cmd) + 1) * sizeof(char *));
+	result = malloc((ft_splitlen(quoted_cmd), + 1) * sizeof(char *));
 	if (!result)
 		return (quoted_cmd);
 	k = 0;

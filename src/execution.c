@@ -33,6 +33,7 @@ void	child(int *pipe, char **environment)
 	else if (((*param_factory())->iteration + 1) == (*param_factory())->cmd_n)
 	{
 		cmd = clean_commands(ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' '));
+		print_cmds(cmd);
 		cmd[0] = correct_path(cmd[0]);
 		if (cmd[0])
 		{
@@ -45,6 +46,7 @@ void	child(int *pipe, char **environment)
 	else 
 	{	
 		cmd = clean_commands(ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' '));
+		print_cmds(cmd);
 		cmd[0] = correct_path(cmd[0]);
 		if (cmd[0])
 		{
