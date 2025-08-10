@@ -94,6 +94,38 @@ void	validate_file_params(void)
 	print_for_debug();
 }
 
+int	has_quotes(char *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (*(cmd + i))
+	{
+		if (*(cmd + i) == '\'')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	has_closed_quotes(char *cmd)
+{
+	int	i;
+	int	quotes;
+
+	i = 0;
+	quotes = 0;
+	while (*(cmd + i))
+	{	
+		if (*(cmd + i) == '\'')
+			quotes++;
+		i++;
+	}
+	if (quotes % 2 == 0)
+		return (quotes);
+	return (0);
+}
+
 char	**clean_commands(char **split)
 {
 	int	i;
@@ -103,18 +135,17 @@ char	**clean_commands(char **split)
 	i = 0;
 	while (split[i])
 	{
-		if (*(split[i]) == '\'' && *(split[i] + ft_strlen(split[i]) - 1) != '\'')
+		if (has_quotes(split[i]) && !has_closed_quotes(split[i]))
 		{
 			first = i;
 			split[i] = ft_strdup_append(NULL, split[i], " ");
-			while (split[i])
+			while (split[++i])
 			{
-				if (*(split[i] + ft_strlen(split[i]) - 1) == '\'')
+				if (!has_closed_quotes(split[i]))
 				{
 					last = i;
 					break;
 				}
-				i++;
 			}
 			if (split[i] && last > first)
 			{
@@ -122,28 +153,83 @@ char	**clean_commands(char **split)
 				if (!split)
 					return (NULL);
 				i = -1;
-				split[first] = clean_quotes(split[first]);
 			}
 		}
 		i++;
 	}
+	split = clean_quotes(split);
 	return (split);
 }
-
-char	*clean_quotes(char *quoted_cmd)
+/**
+char	**clean_quotes(char **quoted_cmd)
 {
-	char	*result;
+	char	**result;
 	unsigned int	i;
 	unsigned int	j;
-
-	result = malloc(ft_strlen(quoted_cmd) - 1);
+	unsigned int	k;
+	
+	result = malloc((ft_splitlen(quoted_cmd) + 1) * sizeof(char *));
 	if (!result)
-		return (NULL);
-	i = 0;
-	j = 1;
-	while (i < (ft_strlen(quoted_cmd) - 2))
-		*(result + i++) = *(quoted_cmd + j++);
-	*(result + i) = '\0';
-	free(quoted_cmd);
+		return (quoted_cmd);
+	k = 0;
+	while (quoted_cmd[k])
+	{
+		if (*(quoted_cmd[k]) == '\'' && *(quoted_cmd[k] + ft_strlen(quoted_cmd[k]) - 1) == '\'' && (ft_strlen(quoted_cmd[k]) > 2))
+		{
+			result[k] = malloc(ft_strlen(quoted_cmd[k]) - 1);
+			i = 0;
+			j = 1;
+			while (*(quoted_cmd[k] + j + 1))
+				*(result[k] + i++) = *(quoted_cmd[k] + j++);
+			*(result[k] + i) = '\0';
+		} 
+		else
+		{
+			result[k] = malloc(ft_strlen(quoted_cmd[k]) + 1);
+			ft_strlcpy(result[k], quoted_cmd[k], ft_strlen(quoted_cmd[k]) + 1);
+		}
+		k++;
+	}
+	quoted_cmd[k] = NULL;
+	ft_splitfree(quoted_cmd);
+	return (result);
+}
+
+**/
+char	**clean_quotes(char **quoted_cmd)
+{
+	char	**result;
+	unsigned int	i;
+	unsigned int	j;
+	unsigned int	k;
+	
+	result = malloc((ft_splitlen(quoted_cmd) + 1) * sizeof(char *));
+	if (!result)
+		return (quoted_cmd);
+	k = 0;
+	while (quoted_cmd[k])
+	{
+		if (has_closed_quotes(quoted_cmd[k]))
+		{
+			result[k] = malloc(ft_strlen(quoted_cmd[k]) - has_closed_quotes(quoted_cmd[k]) + 1);
+			i = 0;
+			j = 0;
+			while (*(quoted_cmd[k] + j))
+			{
+				while ((*(quoted_cmd[k] + j)) == '\'')
+					j++;
+				*(result[k] + i++) = *(quoted_cmd[k] + j++);
+			}
+			*(result[k] + i) = '\0';
+		} 
+		else
+		{
+			result[k] = malloc(ft_strlen(quoted_cmd[k]) + 1);
+			ft_strlcpy(result[k], quoted_cmd[k], ft_strlen(quoted_cmd[k]) + 1);
+		}
+		k++;
+	}
+	quoted_cmd[k] = NULL;
+	ft_splitfree(quoted_cmd);
 	return (result);
 }

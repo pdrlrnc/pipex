@@ -48,7 +48,9 @@ void	check_for_errors(int res, char **cmd, char *command_name);
 void	close_fds(int fd1, int fd2);
 char	*correct_path(char *cmd);
 char	**clean_commands(char **split);
-char	*clean_quotes(char *quoted_cmd);
+char	**clean_quotes(char **quoted_cmd);
+int		has_closed_quotes(char *cmd);
+int		has_quotes(char *cmd);
 
 
 //functions used only for debug, they CAN'T be delivered
