@@ -67,6 +67,7 @@ void	parent(int *pipe)
 	if (!(*param_factory())->iteration)
 	{
 		check_for_errors(close(pipe[1]), NULL, "close");
+		check_for_errors(close((*param_factory())->fd_infile), NULL, "close");
 		(*param_factory())->old_pipe_fd = pipe[0];
 	}
 	else if (((*param_factory())->iteration + 1) != (*param_factory())->cmd_n)
@@ -79,11 +80,10 @@ void	parent(int *pipe)
 	{
 		check_for_errors(close(pipe[0]), NULL, "close");
 		check_for_errors(close(pipe[1]), NULL, "close");
+		check_for_errors(close((*param_factory())->old_pipe_fd), NULL, "close");
+		check_for_errors(close((*param_factory())->fd_outfile), NULL, "close");
 		while (i--)
-		{
-			close(0);
 			check_for_errors(wait(&status), NULL, "wait");
-		}
 	}
 }
 

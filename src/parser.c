@@ -203,7 +203,7 @@ char	**clean_quotes(char **quoted_cmd)
 	unsigned int	j;
 	unsigned int	k;
 	
-	result = malloc((ft_splitlen(quoted_cmd), + 1) * sizeof(char *));
+	result = malloc((ft_splitlen(quoted_cmd) + 1) * sizeof(char *));
 	if (!result)
 		return (quoted_cmd);
 	k = 0;
@@ -218,7 +218,8 @@ char	**clean_quotes(char **quoted_cmd)
 			{
 				while ((*(quoted_cmd[k] + j)) == '\'')
 					j++;
-				*(result[k] + i++) = *(quoted_cmd[k] + j++);
+				if (*(quoted_cmd[k] + j))
+					*(result[k] + i++) = *(quoted_cmd[k] + j++);
 			}
 			*(result[k] + i) = '\0';
 		} 
@@ -229,7 +230,7 @@ char	**clean_quotes(char **quoted_cmd)
 		}
 		k++;
 	}
-	quoted_cmd[k] = NULL;
+	result[k] = NULL;
 	ft_splitfree(quoted_cmd);
 	return (result);
 }
