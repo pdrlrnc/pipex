@@ -14,9 +14,9 @@
 
 int	main(int argc, char **argv, char **environment)
 {
-	int 	pipefd[2];
+	int	pipefd[2];
 	int	pid;
-	
+
 	parse_args(argc, argv, environment);
 	while ((*param_factory())->iteration < (*param_factory())->cmd_n)
 	{

@@ -77,17 +77,16 @@ void	clean_on_failure(int i)
 
 void	validate_file_params(void)
 {
-	(*param_factory())->fd_infile = open((*param_factory())->infile, O_RDONLY);
-	if ((*param_factory())->fd_infile == -1)
-	{	
-		(*param_factory())->fd_outfile = open((*param_factory())->outfile, O_WRONLY | O_CREAT, 0644); 
+	(*param_factory())->fd_outfile = open((*param_factory())->outfile, O_WRONLY | O_CREAT, 0644); 
+	if ((*param_factory())->fd_outfile == -1)
+	{
 		perror((*param_factory())->infile);
 		clean();
 		exit(EXIT_FAILURE);
 	}
-	(*param_factory())->fd_outfile = open((*param_factory())->outfile, O_WRONLY | O_CREAT, 0644); 
+	(*param_factory())->fd_infile = open((*param_factory())->infile, O_RDONLY);
 	if ((*param_factory())->fd_infile == -1)
-	{
+	{	
 		perror((*param_factory())->infile);
 		clean();
 		exit(EXIT_FAILURE);
