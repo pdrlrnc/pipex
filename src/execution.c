@@ -21,7 +21,8 @@ void	child(int *pipe, char **environment)
 	{
 		cmd = clean_commands(ft_split(((*param_factory())->cmds)[0], ' '));
 		print_cmds(cmd);
-		cmd[0] = correct_path(cmd[0]);
+		if (*cmd[0] != '/')
+			cmd[0] = correct_path(cmd[0]);
 		if (cmd[0])
 		{
 			check_for_errors(dup2((*param_factory())->fd_infile, STDIN_FILENO), cmd, "dup2");
@@ -36,7 +37,8 @@ void	child(int *pipe, char **environment)
 	{
 		cmd = clean_commands(ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' '));
 		print_cmds(cmd);
-		cmd[0] = correct_path(cmd[0]);
+		if (*cmd[0] != '/')
+			cmd[0] = correct_path(cmd[0]);
 		if (cmd[0])
 		{
 			check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
@@ -51,7 +53,8 @@ void	child(int *pipe, char **environment)
 	{	
 		cmd = clean_commands(ft_split((*param_factory())->cmds[(*param_factory())->iteration], ' '));
 		print_cmds(cmd);
-		cmd[0] = correct_path(cmd[0]);
+		if (*cmd[0] != '/')
+			cmd[0] = correct_path(cmd[0]);
 		if (cmd[0])
 		{
 			check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
