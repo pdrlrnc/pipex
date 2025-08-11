@@ -27,6 +27,8 @@ void	child(int *pipe, char **environment)
 			check_for_errors(dup2((*param_factory())->fd_infile, STDIN_FILENO), cmd, "dup2");
 			check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
 			close_fds(*pipe, *(pipe + 1));
+			check_for_errors(close((*param_factory())->fd_outfile), cmd, "close");
+			check_for_errors(close((*param_factory())->fd_infile), cmd, "close");
 			check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
 		}
 	}
@@ -40,6 +42,8 @@ void	child(int *pipe, char **environment)
 			check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
 			check_for_errors(dup2((*param_factory())->fd_outfile, STDOUT_FILENO), cmd, "dup2");
 			close_fds(*pipe, *(pipe + 1));
+			check_for_errors(close((*param_factory())->old_pipe_fd), cmd, "close");
+			check_for_errors(close((*param_factory())->fd_outfile), cmd, "close");
 			check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
 		}
 	}
@@ -52,7 +56,9 @@ void	child(int *pipe, char **environment)
 		{
 			check_for_errors(dup2((*param_factory())->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
 			check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
+			check_for_errors(close((*param_factory())->old_pipe_fd), cmd, "close");
 			close_fds(*pipe, *(pipe + 1));
+			check_for_errors(close((*param_factory())->fd_outfile), cmd, "close");
 			check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
 		}
 	}

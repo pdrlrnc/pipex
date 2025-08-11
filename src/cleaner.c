@@ -48,8 +48,4 @@ void	close_fds(int fd1, int fd2)
 {
 	close(fd1);
 	close(fd2);
-	close((*param_factory())->old_pipe_fd);
-	close((*param_factory())->fd_infile);
-	close((*param_factory())->fd_outfile);
-
 }
