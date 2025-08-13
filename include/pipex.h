@@ -37,7 +37,7 @@ void		parse_args(int argc, char **argv, char **environment);
 void		parse_environment(char **environment);
 t_params	**param_factory(void);
 void		clean(void);
-void		clean_on_failure(int i);
+void		clean_on_failure(char **spt1, char **spt2, char *str1, char *str2);
 void		validate_params(void);
 void		check_for_malloc_failure(void *ptr);
 void		clean_split(char **split);
@@ -56,10 +56,8 @@ void		child_last_iteration(int *pipe, char **environment, char **cmd);
 void		parse_args_cont(int i, int argc, char **argv);
 char		**clean_commands_cont(char **split, int first, int last, int *i);
 char		**c_q_cont(char **quoted_cmd, char **result, unsigned int *k);
-
-
-//functions used only for debug, they CAN'T be delivered
-void	print_for_debug(void);
-void	print_cmds(char **cmd);
+void		parse_args_loop(char **argv, int *i);
+char		**has_uneven_quotes(char **split, int *i);
+void		child_middle_iteration(int *pipe, char **environment, char **cmd);
 
 #endif

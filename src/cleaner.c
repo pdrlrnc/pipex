@@ -16,44 +16,33 @@ void	clean(void)
 {
 	free((*param_factory())->infile);
 	free((*param_factory())->outfile);
-	clean_split((*param_factory())->cmds);
-	if ((*param_factory())->fd_infile > 0)
+	ft_splitfree((*param_factory())->cmds);
+	if ((*param_factory())->fd_infile > 2)
 		close((*param_factory())->fd_infile);
-	if ((*param_factory())->fd_outfile > 0)
+	if ((*param_factory())->fd_outfile > 2)
 		close((*param_factory())->fd_outfile);
-	clean_split((*param_factory())->paths);
+	if ((*param_factory())->fd_outfile > 2)
+		close((*param_factory())->old_pipe_fd);
+	ft_splitfree((*param_factory())->paths);
 	free((*param_factory()));
-}
-
-void	check_for_malloc_failure(void *ptr)
-{
-	if (!ptr)
-	{
-		clean();
-		exit(EXIT_FAILURE);
-	}
-}
-
-void	clean_split(char **split)
-{
-	int	i;
-
-	i = 0;
-	while (split[i])
-		free(split[i++]);
-	free(split);
 }
 
 void	close_fds(int fd1, int fd2)
 {
-	close(fd1);
-	close(fd2);
+	check_for_errors(close(fd1), NULL, "close");
+	check_for_errors(close(fd2), NULL, "close");
 }
 
-void	clean_on_failure(int i)
+void	clean_on_failure(char **split1, char **split2, char *str1, char *str2)
 {
-	while (--i > -1)
-		free((*param_factory())->cmds[i]);
-	free((*param_factory())->infile);
+	if (split1)
+		ft_splitfree(split1);
+	if (split2)
+		ft_splitfree(split2);
+	if (str1)
+		free(str1);
+	if (str2)
+		free(str2);
 	free((*param_factory()));
+	exit(EXIT_FAILURE);
 }

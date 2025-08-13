@@ -20,7 +20,10 @@ void	child(int *pipe, char **environment)
 	cmd = clean_commands(ft_split(((*param_factory())
 					->cmds)[(*param_factory())->iteration], ' '));
 	if (!cmd || !cmd[0])
-		return ;
+	{
+		clean();
+		exit(EXIT_FAILURE);
+	}
 	if (*cmd[0] != '/')
 		cmd[0] = correct_path(cmd[0]);
 	if (!(*param_factory())->iteration)
@@ -28,15 +31,7 @@ void	child(int *pipe, char **environment)
 	else if (((*param_factory())->iteration + 1) == (*param_factory())->cmd_n)
 		child_last_iteration(pipe, environment, cmd);
 	else
-	{
-		check_for_errors(dup2((*param_factory())
-				->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
-		check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
-		check_for_errors(close((*param_factory())->old_pipe_fd), cmd, "close");
-		close_fds(*pipe, *(pipe + 1));
-		check_for_errors(close((*param_factory())->fd_outfile), cmd, "close");
-		check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
-	}
+		child_middle_iteration(pipe, environment, cmd);
 }
 
 void	child_first_iteration(int *pipe, char **environment, char **cmd)
@@ -47,7 +42,18 @@ void	child_first_iteration(int *pipe, char **environment, char **cmd)
 	close_fds(*pipe, *(pipe + 1));
 	check_for_errors(close((*param_factory())->fd_outfile), cmd, "close");
 	check_for_errors(close((*param_factory())->fd_infile), cmd, "close");
-	check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
+	check_for_errors(execve(cmd[0], cmd, environment), cmd, cmd[0]);
+}
+
+void	child_middle_iteration(int *pipe, char **environment, char **cmd)
+{
+	check_for_errors(dup2((*param_factory())
+			->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
+	check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
+	check_for_errors(close((*param_factory())->old_pipe_fd), cmd, "close");
+	close_fds(*pipe, *(pipe + 1));
+	check_for_errors(close((*param_factory())->fd_outfile), cmd, "close");
+	check_for_errors(execve(cmd[0], cmd, environment), cmd, cmd[0]);
 }
 
 void	child_last_iteration(int *pipe, char **environment, char **cmd)
@@ -59,5 +65,32 @@ void	child_last_iteration(int *pipe, char **environment, char **cmd)
 	close_fds(*pipe, *(pipe + 1));
 	check_for_errors(close((*param_factory())->old_pipe_fd), cmd, "close");
 	check_for_errors(close((*param_factory())->fd_outfile), cmd, "close");
-	check_for_errors(execve(cmd[0], cmd, environment), cmd, "execve");
+	check_for_errors(execve(cmd[0], cmd, environment), cmd, cmd[0]);
+}
+
+char	*correct_path(char *cmd)
+{
+	char	*full_path;
+	int		i;
+	int		access_res;
+
+	if (!cmd)
+		return (NULL);
+	i = 0;
+	while ((*param_factory())->paths[i])
+	{
+		full_path = ft_strjoin((*param_factory())->paths[i++], cmd);
+		if (full_path)
+		{
+			access_res = access(full_path, F_OK | X_OK);
+			if (!access_res)
+			{
+				free (cmd);
+				return (full_path);
+			}
+			else
+				free(full_path);
+		}
+	}
+	return (cmd);
 }

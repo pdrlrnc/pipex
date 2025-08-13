@@ -17,6 +17,8 @@ int	main(int argc, char **argv, char **environment)
 	int	pipefd[2];
 	int	pid;
 
+	if (!environment || !environment[0])
+		exit(EXIT_FAILURE);
 	parse_args(argc, argv, environment);
 	while ((*param_factory())->iteration < (*param_factory())->cmd_n)
 	{

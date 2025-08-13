@@ -12,49 +12,49 @@
 
 #include "../include/pipex.h"
 
-int	has_closed_quotes(char *cmd)
-{
-	int	i;
-	int	quotes;
-
-	i = 0;
-	quotes = 0;
-	while (*(cmd + i))
-	{
-		if (*(cmd + i) == '\'')
-			quotes++;
-		i++;
-	}
-	if (quotes % 2 == 0)
-		return (quotes);
-	return (0);
-}
-
 char	**clean_commands(char **split)
 {
 	int	i;
-	int	first;
-	int	last;
 
+	if (!split)
+		return (NULL);
 	i = 0;
 	while (split[i])
 	{
 		if (has_quotes(split[i]) && !has_closed_quotes(split[i]))
+			split = has_uneven_quotes(split, &i);
+		if (!split)
 		{
-			first = i;
-			split[i] = ft_strdup_append(NULL, split[i], " ");
-			while (split[++i])
-			{
-				last = i;
-				if (!has_closed_quotes(split[i]))
-					break ;
-			}
-			if (split[i] && last > first)
-				split = clean_commands_cont(split, first, last, &i);
+			clean();
+			exit(EXIT_FAILURE);
 		}
 		i++;
 	}
 	split = clean_quotes(split);
+	return (split);
+}
+
+char	**has_uneven_quotes(char **split, int *i)
+{
+	int	last;
+	int	first;
+
+	first = *i;
+	split[*i] = ft_strdup_append(NULL, split[*i], " ");
+	if (!split[*i])
+	{
+		ft_splitfree_error(split, *i);
+		clean();
+		exit(EXIT_FAILURE);
+	}
+	while (split[++(*i)])
+	{
+		last = *i;
+		if (!has_closed_quotes(split[*i]))
+			break ;
+	}
+	if (split[*i] && last > first)
+		split = clean_commands_cont(split, first, last, i);
 	return (split);
 }
 

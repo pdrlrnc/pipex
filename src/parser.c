@@ -22,23 +22,30 @@ void	parse_args(int argc, char **argv, char **environment)
 	(*param_factory())
 		->infile = malloc((ft_strlen(argv[1]) + 1) * sizeof(char));
 	if (!(*param_factory())->infile)
-	{
-		free((*param_factory()));
-		exit(EXIT_FAILURE);
-	}
+		clean_on_failure((*param_factory())->paths, NULL, NULL, NULL);
 	ft_strlcpy((*param_factory())->infile, argv[1], ft_strlen(argv[1]) + 1);
 	(*param_factory())->cmds = malloc((argc - 1) * sizeof(char *));
+	if (!(*param_factory())->cmds)
+		clean_on_failure((*param_factory())->paths, NULL, (*param_factory())
+			->infile, NULL);
 	i = 0;
 	while ((i + 1) < (argc - 2))
-	{
-		(*param_factory())->cmds[i] = malloc((ft_strlen(argv[i + 2]) + 1));
-		if (!(*param_factory())->cmds[i])
-			return (clean_on_failure(i));
-		ft_strlcpy((*param_factory())
-			->cmds[i], argv[i + 2], ft_strlen(argv[i + 2]) + 1);
-		i++;
-	}
+		parse_args_loop(argv, &i);
 	parse_args_cont(i, argc, argv);
+}
+
+void	parse_args_loop(char **argv, int *i)
+{
+	(*param_factory())->cmds[*i] = malloc((ft_strlen(argv[*i + 2]) + 1));
+	if (!(*param_factory())->cmds[*i])
+	{
+		ft_splitfree_error((*param_factory())->cmds, *i);
+		clean_on_failure((*param_factory())->paths, NULL, (*param_factory())
+			->infile, NULL);
+	}
+	ft_strlcpy((*param_factory())
+		->cmds[*i], argv[*i + 2], ft_strlen(argv[*i + 2]) + 1);
+	(*i)++;
 }
 
 void	parse_args_cont(int i, int argc, char **argv)
@@ -48,7 +55,8 @@ void	parse_args_cont(int i, int argc, char **argv)
 	(*param_factory())->iteration = 0;
 	(*param_factory())->outfile = malloc((ft_strlen(argv[argc - 1]) + 1));
 	if (!(*param_factory())->outfile)
-		return (clean_on_failure(argc - 3));
+		clean_on_failure((*param_factory())->paths, (*param_factory())
+			->cmds, (*param_factory())->infile, NULL);
 	ft_strlcpy((*param_factory())
 		->outfile, argv[argc - 1], ft_strlen(argv[argc - 1]) + 1);
 	validate_file_params();
@@ -61,18 +69,25 @@ void	parse_environment(char **environment)
 	i = 0;
 	while (environment[i])
 	{
-		if (!ft_strncmp(environment[i], "PATH=", 5))
+		if (!ft_strncmp(environment[i++], "PATH=", 5))
 			break ;
-		i++;
 	}
-	environment[i] += 5;
-	(*param_factory())->paths = ft_split(environment[i], ':');
+	(*param_factory())->paths = ft_split(environment[--i] + 5, ':');
+	if (!(*param_factory())->paths)
+		free((*param_factory()));
+	if (!(*param_factory())->paths)
+		exit(EXIT_FAILURE);
 	i = 0;
 	while ((*param_factory())->paths[i])
 	{
 		(*param_factory())->paths[i] = ft_strdup_append(NULL, (*param_factory())
 				->paths[i], "/");
-		i++;
+		if (!(*param_factory())->paths[i++])
+		{
+			ft_splitfree_error((*param_factory())->paths, --i);
+			free(*(param_factory()));
+			exit(EXIT_FAILURE);
+		}
 	}
 }
 
@@ -93,18 +108,4 @@ void	validate_file_params(void)
 		clean();
 		exit(EXIT_FAILURE);
 	}
-}
-
-int	has_quotes(char *cmd)
-{
-	int	i;
-
-	i = 0;
-	while (*(cmd + i))
-	{
-		if (*(cmd + i) == '\'')
-			return (1);
-		i++;
-	}
-	return (0);
 }

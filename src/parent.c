@@ -41,40 +41,14 @@ void	parent(int *pipe)
 	}
 }
 
-char	*correct_path(char *cmd)
-{
-	char	*full_path;
-	int		i;
-	int		access_res;
-
-	if (!cmd)
-		return (NULL);
-	i = 0;
-	while ((*param_factory())->paths[i])
-	{
-		full_path = ft_strjoin((*param_factory())->paths[i++], cmd);
-		if (full_path)
-		{
-			access_res = access(full_path, F_OK | X_OK);
-			if (!access_res)
-			{
-				free (cmd);
-				return (full_path);
-			}
-			else
-				free(full_path);
-		}
-	}
-	return (cmd);
-}
-
 void	check_for_errors(int res, char **cmd, char *command_name)
 {
 	if (res == -1)
 	{
 		perror(command_name);
 		if (cmd)
-			clean_split(cmd);
+			ft_splitfree(cmd);
+		clean();
 		exit(EXIT_FAILURE);
 	}
 }
