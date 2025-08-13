@@ -25,32 +25,37 @@ typedef struct s_params
 	int		fd_infile;
 	char	*infile;
 	char	**cmds;
-	int	cmd_n;
-	int	iteration;
+	int		cmd_n;
+	int		iteration;
 	char	*outfile;
 	int		fd_outfile;
 	int		old_pipe_fd;
 	char	**paths;
 }	t_params;
 
-void	parse_args(int argc, char **argv, char **environment);
-void	parse_environment(char **environment);
+void		parse_args(int argc, char **argv, char **environment);
+void		parse_environment(char **environment);
 t_params	**param_factory(void);
-void	clean(void);
-void	clean_on_failure(int i);
-void	validate_params(void);
-void	check_for_malloc_failure(void *ptr);
-void	clean_split(char **split);
-void	validate_file_params(void);
-void	child(int *pipe, char **environment);
-void	parent(int *pipe);
-void	check_for_errors(int res, char **cmd, char *command_name);
-void	close_fds(int fd1, int fd2);
-char	*correct_path(char *cmd);
-char	**clean_commands(char **split);
-char	**clean_quotes(char **quoted_cmd);
-int		has_closed_quotes(char *cmd);
-int		has_quotes(char *cmd);
+void		clean(void);
+void		clean_on_failure(int i);
+void		validate_params(void);
+void		check_for_malloc_failure(void *ptr);
+void		clean_split(char **split);
+void		validate_file_params(void);
+void		child(int *pipe, char **environment);
+void		parent(int *pipe);
+void		check_for_errors(int res, char **cmd, char *command_name);
+void		close_fds(int fd1, int fd2);
+char		*correct_path(char *cmd);
+char		**clean_commands(char **split);
+char		**clean_quotes(char **quoted_cmd);
+int			has_closed_quotes(char *cmd);
+int			has_quotes(char *cmd);
+void		child_first_iteration(int *pipe, char **environment, char **cmd);
+void		child_last_iteration(int *pipe, char **environment, char **cmd);
+void		parse_args_cont(int i, int argc, char **argv);
+char		**clean_commands_cont(char **split, int first, int last, int *i);
+char		**c_q_cont(char **quoted_cmd, char **result, unsigned int *k);
 
 
 //functions used only for debug, they CAN'T be delivered

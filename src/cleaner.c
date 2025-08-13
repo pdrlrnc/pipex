@@ -49,3 +49,11 @@ void	close_fds(int fd1, int fd2)
 	close(fd1);
 	close(fd2);
 }
+
+void	clean_on_failure(int i)
+{
+	while (--i > -1)
+		free((*param_factory())->cmds[i]);
+	free((*param_factory())->infile);
+	free((*param_factory()));
+}

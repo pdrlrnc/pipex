@@ -12,7 +12,7 @@
 
 NAME        = pipex 
 
-SRC_FILES   = pipex factories parser cleaner execution debug
+SRC_FILES   = pipex factories parser parser2 cleaner parent child debug
 SRC_DIR     = src
 OBJ_DIR     = obj
 INC_DIR     = include
@@ -38,6 +38,8 @@ all: $(CLONE_DIR) $(LIBFT_LIB) $(NAME)
 	@echo "$(TURQUOISE) |    |   |   ||    |    |        \ /     \ $(DEF_COLOUR)"
 	@echo "$(TURQUOISE) |____|   |___||____|   /_______  //___/\  \ $(DEF_COLOUR)"
 	@echo "$(TURQUOISE)                                \/       \_/$(DEF_COLOUR)"
+	@echo "$(TURQUOISE)                   🚬Ceci n'est pas une pipe$(DEF_COLOUR)"
+	
 
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
