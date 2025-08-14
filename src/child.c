@@ -26,6 +26,12 @@ void	child(int *pipe, char **environment)
 	}
 	if (*cmd[0] != '/')
 		cmd[0] = correct_path(cmd[0]);
+	if (!cmd[0])
+	{
+		ft_splitfree(cmd);
+		clean();
+		exit(EXIT_FAILURE);
+	}
 	if (!(*param_factory())->iteration)
 		child_first_iteration(pipe, environment, cmd);
 	else if (((*param_factory())->iteration + 1) == (*param_factory())->cmd_n)
@@ -92,5 +98,7 @@ char	*correct_path(char *cmd)
 				free(full_path);
 		}
 	}
-	return (cmd);
+	ft_printf("%s: command not found\n", cmd);
+	free(cmd);
+	return (NULL);
 }

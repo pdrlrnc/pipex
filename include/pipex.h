@@ -14,6 +14,7 @@
 # define PIPEX_H
 
 # include "libft.h"
+# include "printf.h"
 # include <unistd.h>
 # include <errno.h>
 # include <stdio.h>

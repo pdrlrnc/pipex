@@ -83,6 +83,13 @@ char	**clean_quotes(char **quoted_cmd)
 		else
 		{
 			result[k] = malloc(ft_strlen(quoted_cmd[k]) + 1);
+			if (!result[k])
+			{
+				ft_splitfree_error(result, k);
+				ft_splitfree(quoted_cmd);
+				clean();
+				exit(EXIT_FAILURE);
+			}
 			ft_strlcpy(result[k], quoted_cmd[k], ft_strlen(quoted_cmd[k]) + 1);
 		}
 		k++;

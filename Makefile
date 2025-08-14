@@ -10,28 +10,31 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME        = pipex 
+NAME        = pipex
 
 SRC_FILES   = pipex factories parser parser2 parser3 cleaner parent child
 SRC_DIR     = src
 OBJ_DIR     = obj
 INC_DIR     = include
 
-LIBFT_URL   = https://github.com/pdrlrnc/libft.git
-CLONE_DIR   = libft
-LIBFT_LIB   = $(CLONE_DIR)/libft.a
+PRINTF_URL  = https://github.com/pdrlrnc/ft_printf.git
+PRINTF_DIR  = ft_printf
+PRINTF_LIB  = $(PRINTF_DIR)/libftprintf.a
 
 CC          = cc -g -O0
-CFLAGS      = -Wall -Wextra -Werror -I$(INC_DIR) -I$(CLONE_DIR)
+CFLAGS      = -Wall -Wextra -Werror -I$(INC_DIR)
 RM          = rm -rf
 
-DEF_COLOUR = \033[0;39m
-TURQUOISE = \033[38;2;64;224;208m
+DEF_COLOUR  = \033[0;39m
+TURQUOISE   = \033[38;2;64;224;208m
 
 SRC         = $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(SRC_FILES)))
 OBJ         = $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
+HDRS        = $(INC_DIR)/pipex.h $(INC_DIR)/printf.h $(INC_DIR)/libft.h
 
-all: $(CLONE_DIR) $(LIBFT_LIB) $(NAME)
+.PHONY: all clean fclean re headers
+
+all: $(PRINTF_LIB) headers $(NAME)
 	@echo "$(TURQUOISE)__________.____________________________  ___$(DEF_COLOUR)"
 	@echo "$(TURQUOISE)\______   \   \______   \_   _____/\   \/  /$(DEF_COLOUR)"
 	@echo "$(TURQUOISE) |     ___/   ||     ___/|    __)_  \     / $(DEF_COLOUR)"
@@ -39,35 +42,39 @@ all: $(CLONE_DIR) $(LIBFT_LIB) $(NAME)
 	@echo "$(TURQUOISE) |____|   |___||____|   /_______  //___/\  \ $(DEF_COLOUR)"
 	@echo "$(TURQUOISE)                                \/       \_/$(DEF_COLOUR)"
 	@echo "$(TURQUOISE)                   🚬Ceci n'est pas une pipe$(DEF_COLOUR)"
-	
 
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HDRS) | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
 	@mkdir -p $@
 
-$(NAME): $(OBJ) $(LIBFT_LIB)
-	@$(CC) $(CFLAGS) $(OBJ) -L$(CLONE_DIR) -lft -o $(NAME)
+$(NAME): $(OBJ) $(PRINTF_LIB)
+	@$(CC) $(CFLAGS) $(OBJ) -L$(PRINTF_DIR) -lftprintf -o $(NAME)
 
-$(CLONE_DIR):
-	@git clone --depth 1 $(LIBFT_URL) $(CLONE_DIR)
+$(PRINTF_DIR):
+	@git clone --depth 1 $(PRINTF_URL) $(PRINTF_DIR)
 
-$(LIBFT_LIB): | $(CLONE_DIR)
-	@make debug --no-print-directory -C $(CLONE_DIR)
-	@mv $(CLONE_DIR)/libft.h $(INC_DIR)
+$(PRINTF_LIB): | $(PRINTF_DIR)
+	@$(MAKE) --no-print-directory -C $(PRINTF_DIR)
+
+headers: $(INC_DIR)/printf.h $(INC_DIR)/libft.h
+
+$(INC_DIR)/printf.h: $(PRINTF_LIB)
+	@mkdir -p $(INC_DIR)
+	@cp $(PRINTF_DIR)/include/printf.h $(INC_DIR)/printf.h
+
+$(INC_DIR)/libft.h: $(PRINTF_LIB)
+	@mkdir -p $(INC_DIR)
+	@cp $(PRINTF_DIR)/include/libft.h $(INC_DIR)/libft.h
 
 clean:
 	@$(RM) $(OBJ_DIR)
-	@if [ -d $(CLONE_DIR) ]; then make clean --no-print-directory -C $(CLONE_DIR); fi
-	@$(RM) $(INC_DIR)/libft.h
 
 fclean: clean
 	@$(RM) $(NAME)
-	@$(RM) $(CLONE_DIR)
+	@$(RM) $(INC_DIR)/printf.h $(INC_DIR)/libft.h 
+	@$(RM) -r $(PRINTF_DIR)
 
 re: fclean all
-
-.PHONY: all clean fclean re
 
