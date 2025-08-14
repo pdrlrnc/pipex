@@ -24,8 +24,7 @@ void	child(int *pipe, char **environment)
 		clean();
 		exit(EXIT_FAILURE);
 	}
-	if (*cmd[0] != '/')
-		cmd[0] = correct_path(cmd[0]);
+	cmd[0] = correct_path(cmd[0]);
 	if (!cmd[0])
 	{
 		ft_splitfree(cmd);
@@ -79,10 +78,17 @@ char	*correct_path(char *cmd)
 	char	*full_path;
 	int		i;
 	int		access_res;
+	int		no_access;
 
 	if (!cmd)
 		return (NULL);
 	i = 0;
+	no_access = 0;
+	access_res = access(cmd, F_OK | X_OK);
+	if (errno == EACCES)
+		no_access = 1;
+	if (!access_res)
+		return (cmd);
 	while ((*param_factory())->paths[i])
 	{
 		full_path = ft_strjoin((*param_factory())->paths[i++], cmd);
@@ -98,7 +104,10 @@ char	*correct_path(char *cmd)
 				free(full_path);
 		}
 	}
-	ft_printf("%s: command not found\n", cmd);
+	if (no_access)
+		ft_printf("%s: Permission denied\n", cmd);
+	else
+		ft_printf("%s: command not found\n", cmd);
 	free(cmd);
 	return (NULL);
 }
