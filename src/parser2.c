@@ -81,17 +81,7 @@ char	**clean_quotes(char **quoted_cmd)
 		if (has_closed_quotes(quoted_cmd[k]))
 			result = c_q_cont(quoted_cmd, result, &k);
 		else
-		{
-			result[k] = malloc(ft_strlen(quoted_cmd[k]) + 1);
-			if (!result[k])
-			{
-				ft_splitfree_error(result, k);
-				ft_splitfree(quoted_cmd);
-				clean();
-				exit(EXIT_FAILURE);
-			}
-			ft_strlcpy(result[k], quoted_cmd[k], ft_strlen(quoted_cmd[k]) + 1);
-		}
+			c_q_cont2(quoted_cmd, result, &k);
 		k++;
 	}
 	result[k] = NULL;

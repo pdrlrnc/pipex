@@ -43,3 +43,60 @@ int	has_closed_quotes(char *cmd)
 		return (quotes);
 	return (0);
 }
+
+char	*correct_path(char *cmd)
+{
+	char	*full_path;
+	int		i;
+	int		access_res;
+
+	if (!cmd)
+		return (NULL);
+	i = 0;
+	while ((*param_factory())->paths[i])
+	{
+		full_path = ft_strjoin((*param_factory())->paths[i++], cmd);
+		if (full_path)
+		{
+			access_res = access(full_path, F_OK | X_OK);
+			if (!access_res)
+				free (cmd);
+			if (!access_res)
+				return (full_path);
+			else
+				free(full_path);
+		}
+	}
+	if (!file_access(cmd))
+		return (cmd);
+	free(cmd);
+	return (NULL);
+}
+
+int	file_access(char *cmd)
+{
+	int	no_access;
+
+	no_access = 0;
+	no_access = access(cmd, F_OK | X_OK);
+	if (errno == EACCES)
+		no_access = 2;
+	if (no_access == 1)
+		ft_printf("%s: Permission denied\n", cmd);
+	else if (no_access != 0)
+		ft_printf("%s: command not found\n", cmd);
+	return (no_access);
+}
+
+void	c_q_cont2(char **quoted_cmd, char **result, unsigned int *k)
+{
+	result[*k] = malloc(ft_strlen(quoted_cmd[*k]) + 1);
+	if (!result[*k])
+	{
+		ft_splitfree_error(result, *k);
+		ft_splitfree(quoted_cmd);
+		clean();
+		exit(EXIT_FAILURE);
+	}
+	ft_strlcpy(result[*k], quoted_cmd[*k], ft_strlen(quoted_cmd[*k]) + 1);
+}
