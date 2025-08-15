@@ -53,6 +53,9 @@ char	*correct_path(char *cmd)
 	if (!cmd)
 		return (NULL);
 	i = 0;
+	full_path = ft_strchr(cmd, '/');
+	if (full_path)
+		return (run_curr_dir(cmd));
 	while ((*param_factory())->paths[i])
 	{
 		full_path = ft_strjoin((*param_factory())->paths[i++], cmd);
@@ -67,25 +70,25 @@ char	*correct_path(char *cmd)
 				free(full_path);
 		}
 	}
-	if (!file_access(cmd))
-		return (cmd);
-	free(cmd);
 	return (NULL);
 }
 
-int	file_access(char *cmd)
+char	*run_curr_dir(char *cmd)
 {
-	int	no_access;
+	int	access_res;
 
-	no_access = 0;
-	no_access = access(cmd, F_OK | X_OK);
+	access_res = access(cmd, F_OK | X_OK);
 	if (errno == EACCES)
-		no_access = 2;
-	if (no_access == 1)
+	{
 		ft_printf("%s: Permission denied\n", cmd);
-	else if (no_access != 0)
-		ft_printf("%s: command not found\n", cmd);
-	return (no_access);
+		return (NULL);
+	}
+	else if (errno == ENOENT)
+	{
+		ft_printf("%s: No such file or directory\n", cmd);
+		return (NULL);
+	}
+	return (ft_strdup(cmd));
 }
 
 void	c_q_cont2(char **quoted_cmd, char **result, unsigned int *k)

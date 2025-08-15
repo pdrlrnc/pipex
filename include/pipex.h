@@ -61,6 +61,6 @@ void		parse_args_loop(char **argv, int *i);
 char		**has_uneven_quotes(char **split, int *i);
 void		child_middle_iteration(int *pipe, char **environment, char **cmd);
 void		c_q_cont2(char **quoted_cmd, char **result, unsigned int *k);
-int			file_access(char *cmd);
+char		*run_curr_dir(char *cmd);
 
 #endif

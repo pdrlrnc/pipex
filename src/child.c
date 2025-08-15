@@ -15,8 +15,8 @@
 void	child(int *pipe, char **environment)
 {
 	char	**cmd;
+	char	*full_path;
 
-	cmd = NULL;
 	cmd = clean_commands(ft_split(((*param_factory())
 					->cmds)[(*param_factory())->iteration], ' '));
 	if (!cmd || !cmd[0])
@@ -24,13 +24,15 @@ void	child(int *pipe, char **environment)
 		clean();
 		exit(EXIT_FAILURE);
 	}
-	cmd[0] = correct_path(cmd[0]);
-	if (!cmd[0])
+	full_path = correct_path(cmd[0]);
+	if (!full_path)
 	{
+		close_fds(*pipe, *(pipe + 1));
 		ft_splitfree(cmd);
 		clean();
 		exit(EXIT_FAILURE);
 	}
+	cmd[0] = full_path;
 	if (!(*param_factory())->iteration)
 		child_first_iteration(pipe, environment, cmd);
 	else if (((*param_factory())->iteration + 1) == (*param_factory())->cmd_n)

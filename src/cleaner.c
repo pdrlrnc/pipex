@@ -17,13 +17,9 @@ void	clean(void)
 	free((*param_factory())->infile);
 	free((*param_factory())->outfile);
 	ft_splitfree((*param_factory())->cmds);
-	if ((*param_factory())->fd_infile > 2)
-		close((*param_factory())->fd_infile);
-	if ((*param_factory())->fd_outfile > 2)
-		close((*param_factory())->fd_outfile);
-	if ((*param_factory())->fd_outfile > 2)
-		close((*param_factory())->old_pipe_fd);
 	ft_splitfree((*param_factory())->paths);
+	close((*param_factory())->fd_infile);
+	close((*param_factory())->fd_outfile);
 	free((*param_factory()));
 }
 
