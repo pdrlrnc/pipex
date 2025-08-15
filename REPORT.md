@@ -18,7 +18,7 @@ The goal of this project was to replicate Bash pipes.
 - **Interesting design decisions:**
   - For each command, a `fork()` creates a child process responsible for running the command.
   - A `pipe` is also created. The read and write ends are configured to the correct input/output files.
-  ![Pipeline](./assets/pipex_diagram.png)
+  ![Pipeline](./img/diagram.png)
   - Parsing is solid—more than required—but it should help in minishell.
 
 ## 3. Challenges Faced
