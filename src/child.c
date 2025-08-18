@@ -28,7 +28,7 @@ void	child(int *pipe, char **environment)
 	if (!full_path)
 	{
 		close_fds(*pipe, *(pipe + 1));
-		ft_splitfree(cmd);
+		check_for_errors(close((*param_factory())->old_pipe_fd), cmd, "close");
 		clean();
 		exit(EXIT_FAILURE);
 	}

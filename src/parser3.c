@@ -63,13 +63,12 @@ char	*correct_path(char *cmd)
 		{
 			access_res = access(full_path, F_OK | X_OK);
 			if (!access_res)
-				free (cmd);
-			if (!access_res)
-				return (full_path);
+				return (free(cmd), (full_path));
 			else
 				free(full_path);
 		}
 	}
+	ft_printf("%s: command not found\n", cmd);
 	return (NULL);
 }
 
