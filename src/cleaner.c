@@ -42,3 +42,13 @@ void	clean_on_failure(char **split1, char **split2, char *str1, char *str2)
 	free((*param_factory()));
 	exit(EXIT_FAILURE);
 }
+
+void	clean_child(int *pipe)
+{
+	close_fds(*pipe, *(pipe + 1));
+	if ((*param_factory())->iteration)
+		check_for_errors(close((*param_factory())
+				->old_pipe_fd), NULL, "close");
+	clean();
+	exit(EXIT_FAILURE);
+}

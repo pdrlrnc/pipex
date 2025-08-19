@@ -20,17 +20,12 @@ void	child(int *pipe, char **environment)
 	cmd = clean_commands(ft_split(((*param_factory())
 					->cmds)[(*param_factory())->iteration], ' '));
 	if (!cmd || !cmd[0])
-	{
-		clean();
-		exit(EXIT_FAILURE);
-	}
+		clean_child(pipe);
 	full_path = correct_path(cmd[0]);
 	if (!full_path)
 	{
-		close_fds(*pipe, *(pipe + 1));
-		check_for_errors(close((*param_factory())->old_pipe_fd), cmd, "close");
-		clean();
-		exit(EXIT_FAILURE);
+		ft_splitfree(cmd);
+		clean_child(pipe);
 	}
 	cmd[0] = full_path;
 	if (!(*param_factory())->iteration)
