@@ -18,8 +18,12 @@ void	clean(void)
 	free((*param_factory())->outfile);
 	ft_splitfree((*param_factory())->cmds);
 	ft_splitfree((*param_factory())->paths);
-	close((*param_factory())->fd_infile);
-	close((*param_factory())->fd_outfile);
+	if ((*param_factory())->fd_infile != -1)
+		close((*param_factory())->fd_infile);
+	if ((*param_factory())->fd_outfile != -1)
+		close((*param_factory())->fd_outfile);
+	if ((*param_factory())->old_pipe_fd != -1)
+		close((*param_factory())->old_pipe_fd);
 	free((*param_factory()));
 }
 

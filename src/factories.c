@@ -19,6 +19,9 @@ t_params	**param_factory(void)
 	if (!params)
 	{
 		params = malloc(sizeof(t_params));
+		params->old_pipe_fd = -1;
+		params->fd_infile = -1;
+		params->fd_outfile = -1;
 		if (!params)
 			exit(EXIT_FAILURE);
 	}

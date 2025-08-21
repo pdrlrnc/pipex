@@ -59,7 +59,6 @@ void	parse_args_cont(int i, int argc, char **argv)
 			->cmds, (*param_factory())->infile, NULL);
 	ft_strlcpy((*param_factory())
 		->outfile, argv[argc - 1], ft_strlen(argv[argc - 1]) + 1);
-	validate_file_params();
 }
 
 void	parse_environment(char **environment)
@@ -88,24 +87,5 @@ void	parse_environment(char **environment)
 			free(*(param_factory()));
 			exit(EXIT_FAILURE);
 		}
-	}
-}
-
-void	validate_file_params(void)
-{
-	(*param_factory())->fd_outfile = open((*param_factory())
-			->outfile, O_WRONLY | O_CREAT, 0644);
-	if ((*param_factory())->fd_outfile == -1)
-	{
-		perror((*param_factory())->infile);
-		clean();
-		exit(EXIT_FAILURE);
-	}
-	(*param_factory())->fd_infile = open((*param_factory())->infile, O_RDONLY);
-	if ((*param_factory())->fd_infile == -1)
-	{
-		perror((*param_factory())->infile);
-		clean();
-		exit(EXIT_FAILURE);
 	}
 }
