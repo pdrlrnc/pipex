@@ -12,7 +12,7 @@
 
 NAME        = pipex
 
-SRC_FILES   = pipex factories parser parser2 parser3 cleaner parent child
+SRC_FILES   = pipex factories parser parser2 parser3 cleaner parent child validate_files
 SRC_DIR     = src
 OBJ_DIR     = obj
 INC_DIR     = include
