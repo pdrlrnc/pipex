@@ -63,6 +63,5 @@ void		child_middle_iteration(int *pipe, char **environment, char **cmd);
 void		c_q_cont2(char **quoted_cmd, char **result, unsigned int *k);
 char		*run_curr_dir(char *cmd);
 void		clean_child(int *pipe);
-void		validate_files(int *pipe);
 
 #endif

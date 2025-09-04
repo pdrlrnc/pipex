@@ -17,7 +17,6 @@ void	child(int *pipe, char **environment)
 	char	**cmd;
 	char	*full_path;
 
-	validate_files(pipe);
 	cmd = clean_commands(ft_split(((*param_factory())
 					->cmds)[(*param_factory())->iteration], ' '));
 	if (!cmd || !cmd[0])
@@ -39,10 +38,20 @@ void	child(int *pipe, char **environment)
 
 void	child_first_iteration(int *pipe, char **environment, char **cmd)
 {
+	(*param_factory())->fd_infile = open((*param_factory())->infile, O_RDONLY);
+	if ((*param_factory())->fd_infile == -1)
+	{
+		ft_splitfree(cmd);
+		perror((*param_factory())->infile);
+		close_fds(*pipe, *(pipe + 1));
+		clean();
+		exit(EXIT_FAILURE);
+	}
 	check_for_errors(dup2((*param_factory())
 			->fd_infile, STDIN_FILENO), cmd, "dup2");
 	check_for_errors(dup2(pipe[1], STDOUT_FILENO), cmd, "dup2");
 	close_fds(*pipe, *(pipe + 1));
+	check_for_errors(close((*param_factory())->fd_outfile), cmd, "close");
 	check_for_errors(close((*param_factory())->fd_infile), cmd, "close");
 	check_for_errors(execve(cmd[0], cmd, environment), cmd, cmd[0]);
 }
@@ -60,6 +69,18 @@ void	child_middle_iteration(int *pipe, char **environment, char **cmd)
 
 void	child_last_iteration(int *pipe, char **environment, char **cmd)
 {
+	(*param_factory())->fd_outfile = open((*param_factory())
+			->outfile, O_WRONLY | O_CREAT, 0644);
+	if ((*param_factory())->fd_outfile == -1)
+	{
+		perror((*param_factory())->outfile);
+		if ((*param_factory())->old_pipe_fd != -1)
+			close((*param_factory())->old_pipe_fd);
+		ft_splitfree(cmd);
+		close_fds(*pipe, *(pipe + 1));
+		clean();
+		exit(EXIT_FAILURE);
+	}
 	check_for_errors(dup2((*param_factory())
 			->old_pipe_fd, STDIN_FILENO), cmd, "dup2");
 	check_for_errors(dup2((*param_factory())
